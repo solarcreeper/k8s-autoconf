@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mongo-ingress
+  namespace: mongo
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+        - path: '/mongo-0'
+          pathType: ImplementationSpecific
+          backend:
+            hostNames:
+              - mongo-0
+            service:
+              name: mongo
+              port:
+                number: 27017
+
+

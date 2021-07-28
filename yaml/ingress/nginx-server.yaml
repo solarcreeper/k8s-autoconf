@@ -1,0 +1,43 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: nginx-server
+  namespace: taas
+  labels:
+    app: nginx-server
+spec:
+  selector:
+    matchLabels:
+      app: nginx-server
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx-server
+    spec:
+      containers:
+      - name: nginx-server
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-server
+  namespace: taas
+spec:
+  selector:
+    matchLabels:
+      server: nginx-server
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        server: nginx-server
+    spec:
+      containers:
+      - name: nginx-server
+        image: nginx
+        ports:
+        - containerPort: 80

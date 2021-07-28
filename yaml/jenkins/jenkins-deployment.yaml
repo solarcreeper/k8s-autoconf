@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deploy
+  namespace: namespace_template
+spec:
+  selector:
+    matchLabels:
+      app: jenkins-deploy
+  template:
+    metadata:
+      labels:
+        app: jenkins-deploy
+    spec:
+      terminationGracePeriodSeconds: 10
+      serviceAccount: jenkins-user
+      containers:
+      - name: jenkins
+        image: jenkins:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: "JENKINS_OPTS"
+          value: "--prefix=/jenkins"         #设置路径前缀加上 Jenkins
+        ports:
+        - containerPort: 8080
+          name: web
+          protocol: TCP
+        - containerPort: 50000
+          name: agent
+          protocol: TCP
+#        livenessProbe:
+#          httpGet:
+#            path: /login
+#            port: 8080
+#          initialDelaySeconds: 60
+#          timeoutSeconds: 5
+#          failureThreshold: 12
+#        readinessProbe:
+#          httpGet:
+#            path: /login
+#            port: 8080
+#          initialDelaySeconds: 60
+#          timeoutSeconds: 5
+#          failureThreshold: 12
+        volumeMounts:
+        - name: jenkinshome
+          subPath: jenkins
+          mountPath: /var/jenkins_home
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - name: jenkinshome
+        persistentVolumeClaim:
+          claimName: jenkins-pvc

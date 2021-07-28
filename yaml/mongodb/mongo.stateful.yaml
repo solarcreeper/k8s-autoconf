@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+  namespace: namespace_template
+spec:
+  replicas: 1
+  serviceName: mongo-service
+  selector:
+    matchLabels:
+      name: mongodb
+  template:
+    metadata:
+      labels:
+        name: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:latest
+        imagePullPolicy: IfNotPresent
+        command:
+        - sh
+        - -c
+        - "exec mongod -f /data/mongodb/conf/mongodb.conf"
+        ports:
+        - containerPort: 27017
+          name: mongodb
+          protocol: TCP
+        volumeMounts:
+        - name: mongodb-config
+          mountPath: /data/mongodb/conf/
+        - name: mongodb-data
+          mountPath: /data/mongodb/
+      volumes:
+      - name: mongodb-config
+        configMap:
+          name: mongodb-conf
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: nfs-storage
+      resources:
+        requests:
+          storage: 50Gi

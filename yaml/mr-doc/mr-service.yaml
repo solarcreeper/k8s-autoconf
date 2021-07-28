@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mr-service
+  namespace: mr-doc
+  labels:
+    app: mr-doc
+spec:
+  selector:
+    app: mr-doc
+  ports:
+  - name: web
+    port: 10086
+    targetPort: web

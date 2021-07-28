@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: leanote-ingress
+  namespace: taas
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /leanote
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: leanote-service
+              port:
+                number: 9000

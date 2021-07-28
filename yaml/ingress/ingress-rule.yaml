@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: taas
+  name: nginx-service
+  labels:
+    app: nginx-service
+spec:
+  selector:
+    matchLabels:
+      app: nginx-server
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: http
+    name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: taas
+  name: nginx-service
+  labels:
+    server: nginx-server
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    server: nginx-server
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress
+  namespace: taas
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /jenkins
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /jenkins
+          backend:
+            serviceName: nginx-service
+            servicePort: 80

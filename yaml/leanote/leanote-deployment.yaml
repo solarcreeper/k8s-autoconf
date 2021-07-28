@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leanote
+  namespace: taas
+spec:
+  selector:
+    matchLabels:
+      app: leanote
+  template:
+    metadata:
+      labels:
+        app: leanote
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: leanote
+        image: leanote:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9000
+          name: web
+          protocol: TCP

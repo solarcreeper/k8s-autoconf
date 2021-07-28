@@ -1,0 +1,25 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: mr-doc
+  namespace: mr-doc
+  labels:
+    app: mr-doc
+spec:
+  selector:
+    matchLabels:
+      app: mr-doc
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: mr-doc
+    spec:
+      containers:
+      - name: mr-doc
+        image: jonnyan404/mrdoc-nginx:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 10086
+            name: web
+            protocol: TCP
