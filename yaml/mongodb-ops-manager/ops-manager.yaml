@@ -1,0 +1,23 @@
+apiVersion: mongodb.com/v1
+kind: MongoDBOpsManager
+metadata:
+  name: ops-manager
+  namespace: mongodb
+spec:
+  replicas: 1
+  version: 4.4.5
+
+  adminCredentials: ops-manager-admin-secret
+  # in the Kubernetes secret
+  # for the admin user
+  externalConnectivity:
+    type: LoadBalancer
+
+  applicationDatabase:
+    members: 3
+    version: 5.0.1-ent
+    podSpec:
+      persistence:
+        single:
+          storage: 20Gi
+          storageClass: nfs-storage

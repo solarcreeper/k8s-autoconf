@@ -21,6 +21,8 @@ spec:
         env:
         - name: "JENKINS_OPTS"
           value: "--prefix=/jenkins"         #设置路径前缀加上 Jenkins
+        - name: "JAVA_OPTS"
+            value: "-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Shanghai -Dfile.encoding=UTF-8 -Djava.awt.headless=true"
         ports:
         - containerPort: 8080
           name: web
@@ -46,9 +48,14 @@ spec:
         - name: jenkinshome
           subPath: jenkins
           mountPath: /var/jenkins_home
+        - name: host-time
+          mountPath: /etc/localtime
       securityContext:
         fsGroup: 1000
       volumes:
       - name: jenkinshome
         persistentVolumeClaim:
           claimName: jenkins-pvc
+      - name: host-time
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
