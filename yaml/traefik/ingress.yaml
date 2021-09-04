@@ -1,0 +1,35 @@
+apiVersion: extensions/v1
+kind: Ingress
+metadata:
+  name: traefik-web-ui
+  namespace: kube-system
+spec:
+  rules:
+  - host: traefik-ui.minikube
+    http:
+      paths:
+      - path: /traefik
+        backend:
+          serviceName: traefik-web-ui
+          servicePort: web
+
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traefik-web-ui
+  namespace: kube-system
+  annotations:
+    ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+        - path: /traefik
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: traefik-ingress-service
+              port:
+                number: 80
