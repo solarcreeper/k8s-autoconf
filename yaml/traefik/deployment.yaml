@@ -1,65 +1,36 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: traefik-ingress-controller
-  namespace: kube-system
----
-kind: Deployment
+kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: traefik-ingress-controller
+  name: traefik
   namespace: kube-system
   labels:
-    k8s-app: traefik-ingress-lb
+    app: traefik
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      k8s-app: traefik-ingress-lb
+      app: traefik
   template:
     metadata:
       labels:
-        k8s-app: traefik-ingress-lb
-        name: traefik-ingress-lb
+        app: traefik
     spec:
       serviceAccountName: traefik-ingress-controller
-      terminationGracePeriodSeconds: 60
+      hostNetwork: true
       containers:
-      - image: traefik:latest
-        imagePullPolicy: IfNotPresent
-        name: traefik-ingress-lb
-        ports:
-        - name: http
-          containerPort: 80
-        - name: admin
-          containerPort: 8080
-        args:
-        - --log.level=INFO
-        - --accesslog
-        - --entryPoints.web.address=:80
-        - --entryPoints.websecure.address=:443
-        - --entryPoints.mongo.address=:27017
-        - --api=true
-        - --api.insecure=true
-        - --api.dashboard=true
-        - --providers.kubernetesingress
-        - --providers.kubernetescrd
-        - --ping=true
-
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: traefik-ingress-service
-  namespace: kube-system
-spec:
-  selector:
-    k8s-app: traefik-ingress-lb
-  ports:
-    - protocol: TCP
-      port: 80
-      name: web
-    - protocol: TCP
-      port: 8080
-      name: admin
-  type: NodePort
+        - name: traefik
+          image: traefik:v2.4
+          args:
+            - --log.level=INFO
+            - --accesslog
+            - --api=true
+            - --api.insecure
+            - --metrics.prometheus=true
+            - --metrics.prometheus.addentrypointslabels
+            - --metrics.prometheus.addserviceslabels
+            - --entrypoints.web.address=:80
+            - --entryPoints.websecure.address=:443
+            - --entrypoints.tcpep.address=:8000
+            - --entrypoints.web.forwardedheaders.insecure
+            - --entrypoints.websecure.forwardedheaders.insecure
+            - --providers.kubernetescrd
+            - --providers.kubernetesingress

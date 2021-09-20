@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: batch-job-0s
+spec:
+#  schedule包含5个参数，分别对应分钟，小时，每月中的第几天，月，星期几
+  schedule: "0,1,2,3,4,5,6,7,8,9,10,11,12,13 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: batch-job-0s
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: main
+              image: luksa/batch-job:latest
+              imagePullPolicy: IfNotPresent

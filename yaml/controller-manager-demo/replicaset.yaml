@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: kubia
+spec:
+  replicas: 3
+  selector:
+    matchExpressions:
+#      - { key: app, operator: In, values: [ kubia ] }
+#      - { key: foo, operator: In, values: [ bar ] }
+      - key: app
+        operator: In
+        values:
+          - kubia
+      - key: foo
+        operator: In
+        values:
+          - bar
+  template:
+    metadata:
+      labels:
+        app: kubia
+        foo: bar
+    spec:
+      containers:
+        - name: kubia
+          image: luksa/kubia:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081

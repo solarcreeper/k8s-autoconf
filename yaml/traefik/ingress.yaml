@@ -1,18 +1,43 @@
-apiVersion: extensions/v1
-kind: Ingress
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: traefik-web-ui
+  name: traefik-dashboard
   namespace: kube-system
 spec:
-  rules:
-  - host: traefik-ui.minikube
-    http:
-      paths:
-      - path: /traefik
-        backend:
-          serviceName: traefik-web-ui
-          servicePort: web
-
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`traefik.host.com`)
+    kind: Rule
+    services:
+    - name: api@internal
+      kind: TraefikService
+  - match: Host(`traefik.host.com`) && PathPrefix(`/metrics`)
+    kind: Rule
+    services:
+    - name: prometheus@internal
+      kind: TraefikService
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+  labels:
+    app: traefik
+  name: traefik
+  namespace: kube-system
+spec:
+  ports:
+  - name: "web"
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: traefik
+  type: ClusterIP
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -21,7 +46,7 @@ metadata:
   name: traefik-web-ui
   namespace: kube-system
   annotations:
-    ingress.kubernetes.io/force-ssl-redirect: "false"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
   - http:
