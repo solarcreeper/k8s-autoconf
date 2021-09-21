@@ -22,3 +22,6 @@ data:
 
     xpack.security.enabled: true
     xpack.monitoring.collection.enabled: true
+
+    path.data: /data/db/elasticsearch
+    path.logs: /data/db/eslogs

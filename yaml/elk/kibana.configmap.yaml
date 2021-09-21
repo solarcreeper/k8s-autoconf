@@ -11,3 +11,5 @@ data:
 
     elasticsearch:
       hosts: ${ELASTICSEARCH_HOSTS}
+      username: ${ELASTICSEARCH_USER}
+      password: ${ELASTICSEARCH_PASSWORD}

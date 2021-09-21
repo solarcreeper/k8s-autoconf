@@ -1,8 +1,16 @@
+## ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: kube-system
+  name: traefik-ingress-controller
+---
+## ClusterRole
 kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: traefik-ingress-controller
-
+  namespace: kube-system
 rules:
   - apiGroups:
       - ""
@@ -26,6 +34,7 @@ rules:
       - watch
   - apiGroups:
       - extensions
+      - networking.k8s.io
     resources:
       - ingresses/status
     verbs:
@@ -33,25 +42,70 @@ rules:
   - apiGroups:
       - traefik.containo.us
     resources:
-      - middlewares
       - ingressroutes
-      - traefikservices
       - ingressroutetcps
       - ingressrouteudps
+      - middlewares
       - tlsoptions
       - tlsstores
+      - traefikservices
       - serverstransports
     verbs:
       - get
       - list
       - watch
-
+  - apiGroups:
+      - networking.x-k8s.io
+    resources:
+      - gatewayclasses
+      - gatewayclasses/status
+      - gateways
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - networking.x-k8s.io
+    resources:
+      - gatewayclasses/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - networking.x-k8s.io
+    resources:
+      - gateways/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - networking.x-k8s.io
+    resources:
+      - httproutes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - networking.x-k8s.io
+    resources:
+      - httproutes/status
+    verbs:
+      - get
+      - patch
+      - update
 ---
+## ClusterRoleBinding
 kind: ClusterRoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: traefik-ingress-controller
-
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -60,9 +114,3 @@ subjects:
   - kind: ServiceAccount
     name: traefik-ingress-controller
     namespace: kube-system
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: traefik-ingress-controller
-  namespace: kube-system

@@ -1,4 +1,3 @@
-
 import os
 import argparse
 from time import sleep
@@ -31,9 +30,13 @@ def install(namespace='test'):
                 content = d.read()
                 new_content = content.replace('namespace_template', namespace)
                 f.write(new_content)
-        print('install %s: %s' % (os.path.split(p)[-1],  os.popen('kubectl apply -f %s' % yaml_data).read()))
+        print('install %s: %s' % (os.path.split(p)[-1], os.popen('kubectl apply -f %s' % yaml_data).read()))
         sleep(5)
         os.remove(yaml_data)
+    passwd_cmd = "kubectl exec $(kubectl get pods -n elastic | grep elasticsearch-client | sed -n 1p | awk '{print $1}')  -n elastic  -- bin/elasticsearch-setup-passwords auto -b"
+    secret_cmd = "kubectl create secret generic elasticsearch-pw-elastic -n elastic  --from-literal password=上一条命令中elastic的密码"
+    print("请手动生成kibana的登录密码: %s" % passwd_cmd)
+    print("请手动配置kibana的登录密码: %s" % secret_cmd)
     print('success')
 
 
@@ -51,6 +54,7 @@ def uninstall(namespace='test'):
         print('install %s: %s' % (os.path.split(p)[-1], os.popen('kubectl delete -f %s' % yaml_data).read()))
         sleep(5)
         os.remove(yaml_data)
+    print('remove kibana secret: %s' % os.popen('kubectl delete -f %s' % yaml_data).read())
     print('success')
 
 
