@@ -1,0 +1,112 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elastic
+  namespace: elastic-system
+spec:
+  http:
+    tls:
+      selfSignedCertificate:
+        ## 取消默认的tls
+        disabled: true
+    service:
+      spec:
+        type: NodePort
+  version: 7.8.0
+  nodeSets:
+  - name: master
+    count: 1
+    config:
+      node.master: true
+      node.data: false
+      node.ingest: false
+    podTemplate:
+      spec:
+        securityContext:
+          fsGroup: 0
+          runAsUser: 1000
+          runAsGroup: 0
+      containers:
+        - name: elasticsearch
+          env:
+            - name: ES_JAVA_OPTS
+              value: -Xms1g -Xmx1g
+          resources:
+            requests:
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        storageClassName: nfs-storage
+        resources:
+          requests:
+            storage: 5Gi
+  - name: data
+    count: 3
+    config:
+      node.master: false
+      node.data: true
+      node.ingest: false
+    podTemplate:
+      spec:
+        securityContext:
+          fsGroup: 0
+          runAsUser: 1000
+          runAsGroup: 0
+      containers:
+        - name: elasticsearch
+          env:
+            - name: ES_JAVA_OPTS
+              value: -Xms1g -Xmx1g
+          resources:
+            requests:
+              memory: 1Gi
+            limits:
+              memory: 2Gi
+    volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: nfs-storage
+          resources:
+            requests:
+              storage: 50Gi
+  - name: client
+    count: 1
+    config:
+      node.master: false
+      node.data: false
+      node.ingest: true
+    podTemplate:
+      spec:
+        securityContext:
+          fsGroup: 0
+          runAsUser: 1000
+          runAsGroup: 0
+      containers:
+        - name: elasticsearch
+          env:
+            - name: ES_JAVA_OPTS
+              value: -Xms512m -Xmx512m
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+    volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: nfs-storage
+          resources:
+            requests:
+              storage: 5Gi

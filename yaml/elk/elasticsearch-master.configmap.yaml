@@ -21,5 +21,5 @@ data:
       ingest: false
 
     xpack.security.enabled: true
-    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.enabled: false
     xpack.monitoring.collection.enabled: true

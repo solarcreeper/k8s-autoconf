@@ -54,7 +54,7 @@ def uninstall(namespace='test'):
         print('install %s: %s' % (os.path.split(p)[-1], os.popen('kubectl delete -f %s' % yaml_data).read()))
         sleep(5)
         os.remove(yaml_data)
-    print('remove kibana secret: %s' % os.popen('kubectl delete -f %s' % yaml_data).read())
+    print('remove kibana secret: %s' % os.popen('kubectl delete secret elasticsearch-pw-elastic -n %s' % namespace).read())
     print('success')
 
 

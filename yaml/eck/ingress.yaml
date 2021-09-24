@@ -1,0 +1,15 @@
+apiVersion: extensions/v1
+kind: Ingress
+metadata:
+  name: kibana
+  namespace: elastic-system
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: kibana-kb-http
+          servicePort: 5601
+        path: /kibana

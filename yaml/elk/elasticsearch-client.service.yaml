@@ -15,15 +15,13 @@ spec:
   selector:
     app: elasticsearch
     role: client
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: namespace_template
+  namespace: elastic-system
   name: elasticsearch-client-out
-  labels:
-    app: elasticsearch
-    role: client
 spec:
   type: NodePort
   ports:
@@ -31,5 +29,5 @@ spec:
     name: client
     nodePort: 30123
   selector:
-    app: elasticsearch
-    role: client
+    aelasticsearch.k8s.elastic.co/cluster-name: elastic
+    elasticsearch.k8s.elastic.co/statefulset-name: elastic-es-client
