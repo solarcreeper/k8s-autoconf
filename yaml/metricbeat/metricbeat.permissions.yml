@@ -5,7 +5,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: metricbeat
-    namespace: elastic
+    namespace: elastic-system
 roleRef:
   kind: ClusterRole
   name: metricbeat
@@ -35,7 +35,7 @@ rules:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: elastic
+  namespace: elastic-system
   name: metricbeat
   labels:
     app: metricbeat

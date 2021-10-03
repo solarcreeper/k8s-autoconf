@@ -5,7 +5,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: filebeat
-  namespace: elastic
+  namespace: elastic-system
 roleRef:
   kind: ClusterRole
   name: filebeat
@@ -30,7 +30,7 @@ rules:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: elastic
+  namespace: elastic-system
   name: filebeat
   labels:
     app: filebeat

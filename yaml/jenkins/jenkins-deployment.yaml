@@ -16,13 +16,13 @@ spec:
       serviceAccount: jenkins-user
       containers:
       - name: jenkins
-        image: jenkins:latest
+        image: jenkins/jenkins:latest
         imagePullPolicy: IfNotPresent
         env:
-        - name: "JENKINS_OPTS"
-          value: "--prefix=/jenkins"         #设置路径前缀加上 Jenkins
+#        - name: "JENKINS_OPTS"
+#          value: "--prefix=/jenkins"         #设置路径前缀加上 Jenkins
         - name: "JAVA_OPTS"
-            value: "-Dorg.apache.commons.jelly.tags.fmt.timeZone=Asia/Shanghai -Dfile.encoding=UTF-8 -Djava.awt.headless=true"
+          value: "-Duser.timezone=Asia/Shanghai"
         ports:
         - containerPort: 8080
           name: web
@@ -30,32 +30,27 @@ spec:
         - containerPort: 50000
           name: agent
           protocol: TCP
-#        livenessProbe:
-#          httpGet:
-#            path: /login
-#            port: 8080
-#          initialDelaySeconds: 60
-#          timeoutSeconds: 5
-#          failureThreshold: 12
-#        readinessProbe:
-#          httpGet:
-#            path: /login
-#            port: 8080
-#          initialDelaySeconds: 60
-#          timeoutSeconds: 5
-#          failureThreshold: 12
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 12
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 12
         volumeMounts:
         - name: jenkinshome
           subPath: jenkins
           mountPath: /var/jenkins_home
-        - name: host-time
-          mountPath: /etc/localtime
       securityContext:
         fsGroup: 1000
       volumes:
       - name: jenkinshome
         persistentVolumeClaim:
           claimName: jenkins-pvc
-      - name: host-time
-        hostPath:
-          path: /usr/share/zoneinfo/Asia/Shanghai

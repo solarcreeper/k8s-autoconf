@@ -1,3 +1,21 @@
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: jenkins-service
+#  namespace: namespace_template
+#  labels:
+#    app: jenkins-deploy
+#spec:
+#  selector:
+#    app: jenkins-deploy
+#  ports:
+#  - name: web
+#    port: 8080
+#    targetPort: web
+#  - name: agent
+#    port: 50000
+#    targetPort: agent
+#---
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,31 +26,26 @@ metadata:
 spec:
   selector:
     app: jenkins-deploy
+  type: NodePort
   ports:
   - name: web
     port: 8080
     targetPort: web
+    nodePort: 30123
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-agent
+  namespace: namespace_template
+  labels:
+    app: jenkins-deploy
+spec:
+  selector:
+    app: jenkins-deploy
+  type: NodePort
+  ports:
   - name: agent
     port: 50000
     targetPort: agent
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: jenkins-service-out
-#  namespace: namespace_template
-#  labels:
-#    app: jenkins-deploy
-#spec:
-#  selector:
-#    app: jenkins-deploy
-#  type: NodePort
-#  ports:
-#  - name: web
-#    port: 8080
-#    targetPort: web
-#    nodePort: 30123
-#  - name: agent
-#    port: 50000
-#    targetPort: agent
-#    nodePort: 30005
+    nodePort: 30005

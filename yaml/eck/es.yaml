@@ -12,6 +12,10 @@ spec:
     service:
       spec:
         type: NodePort
+        ports:
+          - name: data-input
+            port: 9200
+            nodePort: 30100
   version: 7.8.0
   nodeSets:
   - name: master
@@ -26,16 +30,16 @@ spec:
           fsGroup: 0
           runAsUser: 1000
           runAsGroup: 0
-      containers:
-        - name: elasticsearch
-          env:
-            - name: ES_JAVA_OPTS
-              value: -Xms1g -Xmx1g
-          resources:
-            requests:
-              memory: 1Gi
-            limits:
-              memory: 2Gi
+#      containers:
+#        - name: elasticsearch
+#          env:
+#            - name: ES_JAVA_OPTS
+#              value: -Xms1g -Xmx1g
+#          resources:
+#            requests:
+#              memory: 1Gi
+#            limits:
+#              memory: 2Gi
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data
@@ -47,7 +51,7 @@ spec:
           requests:
             storage: 5Gi
   - name: data
-    count: 3
+    count: 2
     config:
       node.master: false
       node.data: true
@@ -58,16 +62,16 @@ spec:
           fsGroup: 0
           runAsUser: 1000
           runAsGroup: 0
-      containers:
-        - name: elasticsearch
-          env:
-            - name: ES_JAVA_OPTS
-              value: -Xms1g -Xmx1g
-          resources:
-            requests:
-              memory: 1Gi
-            limits:
-              memory: 2Gi
+#      containers:
+#        - name: elasticsearch
+#          env:
+#            - name: ES_JAVA_OPTS
+#              value: -Xms1g -Xmx1g
+#          resources:
+#            requests:
+#              memory: 1Gi
+#            limits:
+#              memory: 2Gi
     volumeClaimTemplates:
       - metadata:
           name: elasticsearch-data
@@ -90,16 +94,16 @@ spec:
           fsGroup: 0
           runAsUser: 1000
           runAsGroup: 0
-      containers:
-        - name: elasticsearch
-          env:
-            - name: ES_JAVA_OPTS
-              value: -Xms512m -Xmx512m
-          resources:
-            requests:
-              memory: 512Mi
-            limits:
-              memory: 1Gi
+#      containers:
+#        - name: elasticsearch
+#          env:
+#            - name: ES_JAVA_OPTS
+#              value: -Xms512m -Xmx512m
+#          resources:
+#            requests:
+#              memory: 512Mi
+#            limits:
+#              memory: 1Gi
     volumeClaimTemplates:
       - metadata:
           name: elasticsearch-data

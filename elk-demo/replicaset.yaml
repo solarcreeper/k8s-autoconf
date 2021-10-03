@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mount
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+        app: mount
+  template:
+    metadata:
+      labels:
+        app: mount
+    spec:
+      containers:
+        - name: mount
+          image: python:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          command: [ "/bin/sh" ]
+          args: [ "-c", "python /home/mount.py -m '192.168.101.2:/volume1/test' -v 4" ]
+          volumeMounts:
+            - mountPath: /home
+              name: scripts
+      volumes:
+        - name: scripts
+          hostPath:
+            path: /opt/config/test

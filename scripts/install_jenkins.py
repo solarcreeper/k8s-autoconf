@@ -15,7 +15,7 @@ def install(namespace='test'):
     response = os.popen('kubectl create namespace %s' % namespace).read()
     print(response)
 
-    for p in [pvc_path, rbac_path, service_path, deploy_path, ingress_path]:
+    for p in [pvc_path, rbac_path, service_path, deploy_path]:
         with open(yaml_data, 'w') as f:
             with open(p, 'r') as d:
                 content = d.read()
@@ -29,7 +29,7 @@ def install(namespace='test'):
 
 
 def uninstall(namespace='test'):
-    for p in [ingress_path, deploy_path, service_path, pvc_path, rbac_path]:
+    for p in [deploy_path, service_path, pvc_path, rbac_path]:
         with open(yaml_data, 'w') as f:
             with open(p, 'r') as d:
                 content = d.read()
