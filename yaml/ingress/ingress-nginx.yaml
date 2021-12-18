@@ -157,6 +157,7 @@ rules:
     verbs:
       - get
       - list
+      - update
       - watch
   - apiGroups:
       - ''
@@ -274,7 +275,7 @@ spec:
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/component: controller
 ---
-# Source: ingress-nginx/templates/controller-deployment.yaml
+# Source: ingress-nginx/templates/controller-daemonset.yaml
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
