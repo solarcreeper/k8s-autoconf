@@ -7,7 +7,7 @@ pvc_path = os.path.join(yaml_path, 'jenkins-pvc.yaml')
 rbac_path = os.path.join(yaml_path, 'jenkins-rbac.yaml')
 service_path = os.path.join(yaml_path, 'jenkins-service.yaml')
 deploy_path = os.path.join(yaml_path, 'jenkins-deployment.yaml')
-ingress_path = os.path.join(yaml_path, 'jenkins-ingress.yaml')
+# ingress_path = os.path.join(yaml_path, 'jenkins-ingress.yaml')
 yaml_data = os.path.join(os.path.split(__file__)[0], 'yaml_data.yaml')
 
 
