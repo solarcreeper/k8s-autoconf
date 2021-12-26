@@ -7,9 +7,12 @@ expose:
       core: registry.ianworks.me
       notary: notary.ianworks.me
     annotations:
-      kubernetes.io/ingress.class: "nginx"
-      ingress.kubernetes.io/ssl-redirect: "true"
-      ingress.kubernetes.io/proxy-body-size: "0"
+#      kubernetes.io/ingress.class: "nginx"
+#      ingress.kubernetes.io/ssl-redirect: "true"
+#      ingress.kubernetes.io/proxy-body-size: "0"
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
 
 externalURL: https://registry.ianworks.me
 #  type: nodePort

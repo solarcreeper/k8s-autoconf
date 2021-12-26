@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jenkins-dashboard-route
+  namespace: taas
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`jenkins.ianworks.me`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+      - name: jenkins-service
+        port: 8080
