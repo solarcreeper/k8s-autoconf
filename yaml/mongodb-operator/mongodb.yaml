@@ -1,0 +1,67 @@
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: mongodb
+  namespace: mongodb
+spec:
+  members: 2
+  type: ReplicaSet
+  version: "4.2.6"
+  security:
+    authentication:
+      modes: ["SCRAM"]
+  users:
+    - name: ianworks
+      db: admin
+      passwordSecretRef:
+        name: ianworks-password
+      roles:
+        - name: clusterAdmin
+          db: admin
+        - name: userAdminAnyDatabase
+          db: admin
+      scramCredentialsSecretName: my-scram
+
+  statefulSet:
+    spec:
+        # Name for the service object created by the operator
+#      serviceName: mongodb-svc
+      selector: {}
+        # Specifies a size for the data volume different from the default 10Gi
+      volumeClaimTemplates:
+        - metadata:
+            name: data-volume
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            storageClassName: nfs-storage
+            resources:
+              requests:
+                storage: 20Gi
+        - metadata:
+            name: logs-volume
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            storageClassName: nfs-storage
+            resources:
+              requests:
+                storage: 5Gi
+      template:
+        # Adds a custom volume to the pods
+        spec:
+          volumes:
+            - name: custom-volume
+              emptyDir: {}
+          containers:
+          - name: mongodb-agent
+            volumeMounts:
+              - name: custom-volume
+                mountPath: /my-custom-version/mount-path
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ianworks-password
+  namespace: mongodb
+type: Opaque
+stringData:
+  password: your-password

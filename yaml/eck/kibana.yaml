@@ -14,8 +14,6 @@ spec:
         disabled: true
     service:
       spec:
-        type: NodePort
         ports:
           - name: web-ui
             port: 5601
-            nodePort: 30101

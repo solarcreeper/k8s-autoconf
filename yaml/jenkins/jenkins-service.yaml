@@ -26,12 +26,9 @@ metadata:
 spec:
   selector:
     app: jenkins-deploy
-  type: NodePort
   ports:
   - name: web
     port: 8080
-    targetPort: web
-    nodePort: 30123
 ---
 apiVersion: v1
 kind: Service
@@ -43,9 +40,6 @@ metadata:
 spec:
   selector:
     app: jenkins-deploy
-  type: NodePort
   ports:
   - name: agent
     port: 50000
-    targetPort: agent
-    nodePort: 30005
