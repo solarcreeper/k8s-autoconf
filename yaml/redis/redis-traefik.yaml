@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: redis-traefik-tcp
+  namespace: taas
+spec:
+  entryPoints:
+    - redis
+  routes:
+  - match: HostSNI(`*`)
+    services:
+    - name: redis
+      port: 6379

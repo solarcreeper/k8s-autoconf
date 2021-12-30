@@ -6,7 +6,7 @@ metadata:
 spec:
   members: 2
   type: ReplicaSet
-  version: "4.2.6"
+  version: "4.4.10"
   security:
     authentication:
       modes: ["SCRAM"]
@@ -20,12 +20,14 @@ spec:
           db: admin
         - name: userAdminAnyDatabase
           db: admin
+        - name: readWriteAnyDatabase
+          db: admin
       scramCredentialsSecretName: my-scram
 
   statefulSet:
     spec:
         # Name for the service object created by the operator
-#      serviceName: mongodb-svc
+      serviceName: mongodb-svc
       selector: {}
         # Specifies a size for the data volume different from the default 10Gi
       volumeClaimTemplates:
@@ -64,4 +66,4 @@ metadata:
   namespace: mongodb
 type: Opaque
 stringData:
-  password: your-password
+  password: ianworks_1002

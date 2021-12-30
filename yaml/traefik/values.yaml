@@ -24,6 +24,9 @@ ports:
     port: 27017
     hostPort: 27017
 
+  redis:
+    port: 6379
+    hostPort: 6379
 # Options for the main traefik service, where the entrypoints traffic comes
 # from.
 service:  # 使用 hostport 模式就不需要Service了
