@@ -26,6 +26,9 @@ spec:
           - mountPath: /var/lib/redis
             name: data
           - mountPath: /redis-master
+
+
+
             name: config
         livenessProbe:
           exec:

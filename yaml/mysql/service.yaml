@@ -13,4 +13,4 @@ spec:
     - name: web
       port: 3306
       targetPort: 3306
-      nodePort: 33306
+      nodePort: 30020

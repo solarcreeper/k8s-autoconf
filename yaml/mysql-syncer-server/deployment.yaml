@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canal-server
+  namespace: mysql
+spec:
+  selector:
+    matchLabels:
+      app: canal-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: canal-server
+    spec:
+      containers:
+        - image: canal/canal-server:latest
+          imagePullPolicy: IfNotPresent
+          name: canal-server
+          ports:
+            - containerPort: 3306
+              name: mysql
