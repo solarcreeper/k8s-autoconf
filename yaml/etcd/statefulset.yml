@@ -3,19 +3,19 @@ kind: StatefulSet
 metadata:
   labels:
     app: etcd
-  name: infra-etcd-cluster
+  name: etcd-cluster
   namespace: etcd
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: etcd
-  serviceName: infra-etcd-cluster
+  serviceName: etcd-cluster
   template:
     metadata:
       labels:
         app: etcd
-      name: infra-etcd-cluster
+      name: etcd-cluster
     spec:
       containers:
       - command:
@@ -123,7 +123,7 @@ spec:
         - name: ROOT_PASSWORD
           value: '@123#'
         - name: SET_NAME
-          value: "infra-etcd-cluster"
+          value: "etcd-cluster"
         - name: GOMAXPROCS
           value: "4"
         image: gcr.io/etcd-development/etcd:v3.3.8
@@ -165,7 +165,7 @@ spec:
                         rm -rf /var/run/etcd/*
                     fi
                 fi
-        name: infra-etcd-cluster
+        name: etcd-cluster
         ports:
         - containerPort: 2380
           name: peer
