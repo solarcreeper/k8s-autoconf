@@ -2,21 +2,18 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    k8s-app: infra-etcd-cluster
     app: etcd
   name: infra-etcd-cluster
   namespace: etcd
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      k8s-app: infra-etcd-cluster
       app: etcd
   serviceName: infra-etcd-cluster
   template:
     metadata:
       labels:
-        k8s-app: infra-etcd-cluster
         app: etcd
       name: infra-etcd-cluster
     spec:
@@ -101,16 +98,9 @@ spec:
                   --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE}
           fi
 
-          for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-              while true; do
-                  echo "Waiting for ${SET_NAME}-${i}.${SET_NAME}.${CLUSTER_NAMESPACE} to come up"
-                  ping -W 1 -c 1 ${SET_NAME}-${i}.${SET_NAME}.${CLUSTER_NAMESPACE} > /dev/null && break
-                  sleep 1s
-              done
-          done
-
           echo "join member ${HOSTNAME}"
           # join member
+          echo $(initial_peers)
           exec etcd --name ${HOSTNAME} \
               --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}.${CLUSTER_NAMESPACE}:2380 \
               --listen-peer-urls http://0.0.0.0:2380 \
@@ -123,7 +113,7 @@ spec:
 
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: "3"
+          value: "1"
         - name: CLUSTER_NAMESPACE
           valueFrom:
             fieldRef:
