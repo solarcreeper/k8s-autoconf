@@ -1,0 +1,18 @@
+FROM ubuntu:25.10
+
+# 安装curl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl iputils-ping telnet dnsutils vim wget iptables ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# 下载并安装kubectl
+ENV KUBECTL_VERSION=v1.30.0
+RUN curl -LO "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
+# 验证安装
+RUN kubectl version --client --short
+
+# 设置默认命令
+CMD ["tail", "-f", "/dev/null"]

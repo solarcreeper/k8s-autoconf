@@ -1,21 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node-info-app
+  name: node-info-deployment
   labels:
-    app: node-info
+    app: node-info-deployment
 spec:
   replicas: 3  # 可以根据需要调整副本数量
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%     # 允许最多启动 10 个新 Pod（即 100% 的副本数）
+      maxUnavailable: 0   # 旧 Pod 在新 Pod 就绪前不可被终止
   selector:
     matchLabels:
-      app: node-info
+      app: node-info-deployment
   template:
     metadata:
       labels:
-        app: node-info
+        app: node-info-deployment
     spec:
       containers:
-      - name: node-info
+      - name: node-info-deployment
         image: ccr.ccs.tencentyun.com/matrix-tools/node-info:latest  # 替换为你的镜像名称，如 registry.example.com/node-info-app:1.0
         imagePullPolicy: IfNotPresent  # 对于本地镜像使用 IfNotPresent，生产环境应使用 Always
         ports:
@@ -39,16 +44,30 @@ spec:
             port: 5000
           initialDelaySeconds: 5
           periodSeconds: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config  # 挂载路径
+      volumes:
+      - name: config-volume
+        configMap:
+          name: my-config  # 引用已创建的 ConfigMap
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: node-info-service
+  name: node-info-deployment
 spec:
   selector:
-    app: node-info
+    app: node-info-deployment
   ports:
     - protocol: TCP
       port: 80
       targetPort: 5000
   type: ClusterIP  # 对于生产环境，可以考虑使用 LoadBalancer 或 NodePort
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  a: "b"  # 键值对 a -> b

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug-tool
+  labels:
+    app: debug-tool
+spec:
+  replicas: 1  # 可以根据需要调整副本数量
+  selector:
+    matchLabels:
+      app: debug-tool
+  template:
+    metadata:
+      labels:
+        app: debug-tool
+    spec:
+      containers:
+      - name: debug-tool
+        image: ccr.ccs.tencentyun.com/matrix-tools/debug-tool:latest  # 替换为你的镜像名称，如 registry.example.com/node-info-app:1.0
+        imagePullPolicy: Always  # 对于本地镜像使用 IfNotPresent，生产环境应使用 Always
+        command: ["sleep", "infinity"]
+      - name: proxy
+        image: ccr.ccs.tencentyun.com/matrix-tools/debug-tool:latest  # 替换为你的镜像名称，如 registry.example.com/node-info-app:1.0
+        imagePullPolicy: Always  # 对于本地镜像使用 IfNotPresent，生产环境应使用 Always
+        command: [ "kubectl", "proxy" ]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pod-admin-access
+subjects:
+- kind: ServiceAccount
+  name: default  # 使用default SA
+  namespace: default  # 你的命名空间
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin  # 内置管理员角色
+  apiGroup: rbac.authorization.k8s.io

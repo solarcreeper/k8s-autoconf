@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-info-daemonset
+  labels:
+    app: node-info-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: node-info-daemonset
+  template:
+    metadata:
+      labels:
+        app: node-info-daemonset
+    spec:
+      containers:
+      - name: node-info-daemonset
+        image: ccr.ccs.tencentyun.com/matrix-tools/node-info:latest
+        ports:
+        - containerPort: 5000
+      # 可选：容忍所有污点（确保即使在 Master 节点上也调度）

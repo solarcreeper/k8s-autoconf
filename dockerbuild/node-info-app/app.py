@@ -25,7 +25,7 @@ def get_node_info():
         "environment_variables": dict(os.environ)
     }
     
-    return '命中节点:%s' %node_info['ip_address']
+    return 'v2命中节点:%s' %node_info['ip_address']
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

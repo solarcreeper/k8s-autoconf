@@ -1,25 +1,29 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: node-info-statefulset
+  name: node-info-sts
   labels:
-    app: node-info
+    app: node-info-sts
 spec:
-  serviceName: "node-info-service-statefulset"  # 必须指定对应的Headless Service
+  serviceName: "node-info-sts"  # 必须指定对应的Headless Service
   replicas: 3  # StatefulSet会按顺序创建Pod
   selector:
     matchLabels:
-      app: node-info
+      app: node-info-sts
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 1
   template:
     metadata:
       labels:
-        app: node-info
+        app: node-info-sts
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-      - name: node-info
+      - name: node-info-sts
         image: ccr.ccs.tencentyun.com/matrix-tools/node-info:latest  # 替换为你的镜像
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
           name: web
@@ -47,11 +51,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: node-info-service-statefulset
+  name: node-info-sts
 spec:
   clusterIP: None  # Headless Service标识
   selector:
-    app: node-info
+    app: node-info-sts
   ports:
     - protocol: TCP
       port: 80
